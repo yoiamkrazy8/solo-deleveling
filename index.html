@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="google-adsense-account" content="ca-pub-8738762387518867">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0b1024" />
+<meta name="description" content="Solo Deleveling. Thirty trap-filled rooms after dark. Find the exit, trust nothing, and try again." />
+<title>Solo Deleveling</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="style.css?v=city-night-3" />
+</head>
+<body>
+<!-- In-game controls -->
+<div id="game-tools">
+  <button id="btn-menu" class="ic-btn hidden" aria-label="Back to menu" title="Menu (Esc)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 11 9-8 9 8M6 9v12h12V9M10 21v-7h4v7"/></svg></button>
+  <button id="btn-mute" class="ic-btn" aria-label="Toggle sound"><span id="ic-mute"></span></button>
+  <button id="btn-fs" class="ic-btn" aria-label="Toggle fullscreen"><span id="ic-fs"></span></button>
+</div>
+
+<div id="stage">
+  <canvas id="game" width="960" height="540" aria-label="Solo Deleveling platforming arena"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <span id="hud-levelnum" class="pill">1</span>
+      <div class="hud-room"><span id="hud-world">THE ROOFTOPS</span><span id="hud-levelname">NOTHING TO SEE HERE</span></div>
+    </div>
+    <div class="hud-right">
+      <span class="skull">&#9760;</span><span id="hud-deaths">0</span>
+      <span class="hint">R&nbsp;restart</span>
+    </div>
+  </div>
+
+  <div id="rage-toast" role="status" aria-live="polite" aria-atomic="true" aria-hidden="true"><span id="rage-meta"></span><strong id="rage-title"></strong><span id="rage-detail"></span></div>
+
+  <!-- MENU -->
+  <div id="menu">
+    <div class="menu-inner">
+      <div class="night-label"><i></i> THE NIGHT HAS OTHER PLANS.</div>
+      <div class="devil-face" aria-hidden="true">
+        <div class="horn left"></div>
+        <div class="horn right"></div>
+        <div class="face">
+          <div class="eye l"></div>
+          <div class="eye r"></div>
+          <div class="grin"></div>
+        </div>
+      </div>
+      <h1 class="title"><span class="t-solo">SOLO</span><span class="t-devel">DELEVELING<span class="title-dot">.</span></span></h1>
+      <p class="subtitle">The exit is there.<br><span class="wink">Your patience might not be.</span></p>
+      <button id="play-btn">ENTER THE NIGHT <span aria-hidden="true">↗</span></button>
+      <div class="grid-label">30 ROOMS · PICK YOUR BAD DECISION</div>
+      <div id="level-grid"></div>
+      <p class="menu-deaths">total deaths: <span id="menu-deaths">0</span></p>
+      <p class="controls-hint">&larr; &rarr; / A D move &nbsp;&middot;&nbsp; &uarr; / W / SPACE jump &nbsp;&middot;&nbsp; ESC menu</p>
+    </div>
+  </div>
+
+  <!-- END SCREEN -->
+  <div id="end-screen" class="hidden">
+    <div class="menu-inner">
+      <h1 class="end-title">YOU OUTLASTED<br>THE NIGHT</h1>
+      <p class="end-sub">Thirty rooms later. You made it.</p>
+      <p class="end-stats">you died <span id="end-deaths">0</span> times. <span id="end-roast"></span></p>
+      <button id="end-menu-btn">BACK TO MENU</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOUCH CONTROLS (mobile only) -->
+<div id="touch-controls" class="hidden">
+  <div class="tc-group tc-move">
+    <button id="tc-left" class="tc-btn" aria-label="Move left">
+      <svg viewBox="0 0 24 24" width="30" height="30"><path d="M15 5 L7 12 L15 19" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button id="tc-right" class="tc-btn" aria-label="Move right">
+      <svg viewBox="0 0 24 24" width="30" height="30"><path d="M9 5 L17 12 L9 19" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="tc-group tc-actions">
+    <button id="tc-restart" class="tc-btn tc-small" aria-label="Restart level">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 12 a8 8 0 1 1 2.4 5.7 M4 12 V6 M4 12 H10" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button id="tc-jump" class="tc-btn tc-jump" aria-label="Jump">
+      <svg viewBox="0 0 24 24" width="34" height="34"><path d="M5 15 L12 7 L19 15" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- portrait rotate hint -->
+<div id="rotate-hint">↻ rotate your phone for a bigger view</div>
+
+<script src="game.js?v=city-night-3"></script>
+<script src="night-skin.js?v=city-night-3"></script>
+</body>
+</html>
