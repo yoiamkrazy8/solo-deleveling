@@ -1,0 +1,409 @@
+/* ============================================================
+   SOLO DELEVELING — styles. clean, themeable, mobile-first.
+   ============================================================ */
+
+:root,
+[data-theme="dark"] {
+  --bg: #090e20;
+  --bg2: #121b35;
+  --stage: #080c19;
+  --fg: #d4dcf1;
+  --muted: #8e9dbd;
+  --line: rgba(191, 211, 245, 0.12);
+  --panel: rgba(23, 34, 59, 0.66);
+  --glass: rgba(17, 27, 48, 0.72);
+  --accent: #9ae5d3;
+  --accent-press: #5b9d94;
+  --danger: #ee94b2;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] {
+  --bg: #f0ece2;
+  --bg2: #e6e0d3;
+  --stage: #efe9dd;
+  --fg: #1c1e26;
+  --muted: #6b6a63;
+  --line: rgba(28, 30, 38, 0.1);
+  --panel: rgba(255, 255, 255, 0.72);
+  --glass: rgba(255, 255, 255, 0.7);
+  --accent: #ef7c1b;
+  --accent-press: #c9650f;
+  --danger: #e5463c;
+  --shadow: 0 18px 50px rgba(90, 70, 45, 0.18);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--stage);
+  font-family: "Trebuchet MS", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--fg);
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 0%, var(--bg2) 0%, var(--bg) 60%, var(--stage) 100%);
+}
+
+#stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100dvh;
+}
+
+canvas#game {
+  display: block;
+  background: var(--bg);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  image-rendering: -webkit-optimize-contrast;
+  touch-action: none;
+}
+@media (pointer: coarse) {
+  canvas#game { border-radius: 0; box-shadow: none; }
+}
+
+.hidden { display: none !important; }
+
+/* ---------------------------------------------------------------- topbar */
+#game-tools {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 40;
+  display: flex;
+  gap: 8px;
+}
+.ic-btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--fg);
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.ic-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ic-btn:active { transform: scale(0.9); }
+
+/* ---------------------------------------------------------------- HUD */
+#hud {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 14px 18px;
+  pointer-events: none;
+  font-weight: 700;
+  z-index: 5;
+}
+.hud-left { display: flex; align-items: center; gap: 12px; }
+.pill {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #101c2c;
+  font-weight: 800;
+  font-size: 15px;
+}
+#hud-levelname {
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--fg);
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.hud-right { display: flex; align-items: center; gap: 8px; font-size: 15px; }
+.skull { font-size: 18px; opacity: 0.8; }
+.hint {
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- overlays (menu / end) */
+#menu, #end-screen {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  overflow: hidden;
+  z-index: 10;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 18%, var(--bg2) 0%, var(--bg) 62%, var(--stage) 100%);
+  animation: fade 0.4s ease;
+}
+@media (pointer: coarse) { #menu, #end-screen { border-radius: 0; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.menu-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4% 6%;
+  text-align: center;
+  overflow-y: auto;
+}
+
+/* devil face */
+.devil-face { position: relative; width: 84px; height: 70px; margin-bottom: 10px; animation: bob 3s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-7px) rotate(1.5deg); } }
+.face {
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  width: 68px;
+  height: 60px;
+  background: var(--accent);
+  border-radius: 50% 50% 46% 46%;
+}
+.horn {
+  position: absolute;
+  top: -8px;
+  width: 0; height: 0;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 22px solid var(--accent);
+}
+.horn.left { left: 6px; transform: rotate(-22deg); }
+.horn.right { right: 6px; transform: rotate(22deg); }
+.eye {
+  position: absolute;
+  top: 22px;
+  width: 11px; height: 14px;
+  background: #101c2c;
+  border-radius: 50%;
+}
+.eye.l { left: 18px; }
+.eye.r { right: 18px; }
+.grin {
+  position: absolute;
+  bottom: 13px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px; height: 17px;
+  border-bottom: 4px solid #101c2c;
+  border-radius: 0 0 18px 18px;
+}
+
+/* title */
+.title {
+  margin: 4px 0 6px;
+  font-size: clamp(38px, 8vw, 76px);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  display: flex;
+  gap: 2px;
+}
+.t-fable { color: var(--fg); }
+.t-devil { color: var(--accent); }
+.subtitle {
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: clamp(13px, 2.6vw, 16px);
+  font-weight: 500;
+}
+.wink { color: var(--accent); font-weight: 800; }
+
+button#play-btn, button#end-menu-btn {
+  font-family: inherit;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #101c2c;
+  background: var(--accent);
+  border: none;
+  border-radius: 13px;
+  padding: 14px 50px;
+  cursor: pointer;
+  box-shadow: 0 8px 0 var(--accent-press);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.2s ease;
+}
+button#play-btn:hover, button#end-menu-btn:hover { filter: brightness(1.06); }
+button#play-btn:active, button#end-menu-btn:active {
+  transform: translateY(6px);
+  box-shadow: 0 2px 0 var(--accent-press);
+}
+
+.grid-label {
+  margin: 26px 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* level grid (handles 30+ levels) */
+#level-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+  width: min(440px, 88%);
+}
+#level-grid button {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+}
+#level-grid button:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); }
+#level-grid button:disabled { opacity: 0.32; cursor: not-allowed; }
+#level-grid button.done {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #101c2c;
+}
+
+.menu-deaths { margin: 22px 0 4px; color: var(--muted); font-size: 13px; font-weight: 600; }
+.controls-hint { margin: 4px 0 0; color: var(--muted); font-size: 12px; opacity: 0.7; }
+
+/* end screen */
+.end-title {
+  font-size: clamp(40px, 9vw, 80px);
+  font-weight: 900;
+  line-height: 0.9;
+  margin: 0 0 10px;
+  color: var(--accent);
+}
+.end-sub { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+.end-stats { color: var(--fg); font-size: 15px; max-width: 420px; margin: 0 0 26px; line-height: 1.5; }
+
+/* ---------------------------------------------------------------- touch controls (float over canvas) */
+#touch-controls {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 max(20px, env(safe-area-inset-left)) max(24px, env(safe-area-inset-bottom));
+}
+.tc-group { display: flex; align-items: flex-end; gap: 16px; pointer-events: none; }
+.tc-actions { align-items: center; }
+.tc-btn {
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  width: 66px; height: 66px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--fg);
+  touch-action: none;
+  user-select: none;
+  transition: transform 0.08s ease, background 0.12s ease, color 0.12s ease;
+}
+.tc-btn.held, .tc-btn:active {
+  background: var(--accent);
+  color: #101c2c;
+  border-color: var(--accent);
+  transform: scale(0.93);
+}
+.tc-jump { width: 82px; height: 82px; }
+.tc-small { width: 50px; height: 50px; opacity: 0.85; }
+
+/* rotate hint */
+#rotate-hint {
+  position: fixed;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 35;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--fg);
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  pointer-events: none;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+#rotate-hint.show { display: block; }
+@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* small screens: tighten the level grid */
+@media (max-width: 540px) {
+  #level-grid { grid-template-columns: repeat(6, 1fr); width: min(330px, 90%); gap: 7px; }
+  .devil-face { transform: scale(0.85); }
+}
+@media (max-height: 560px) and (pointer: coarse) {
+  .grid-label, #level-grid, .menu-deaths, .controls-hint { display: none; }
+  .subtitle { margin-bottom: 14px; }
+}
+
+/* Solo Deleveling night skin. Level geometry and physics stay in game.js. */
+:root{color-scheme:dark}button:focus-visible{outline:2px solid #c5b6ff;outline-offset:4px}
+canvas#game,#menu,#end-screen{border-radius:0;box-shadow:none}
+#menu,#end-screen{background:radial-gradient(ellipse at 82% 24%,#25325660,transparent 36%),linear-gradient(150deg,#0b1024,#141d36 70%,#0c1227)}
+#menu:before{content:"";position:absolute;right:8%;top:11%;width:clamp(48px,7vw,90px);height:clamp(48px,7vw,90px);border-radius:50%;background:#a9bfdf;box-shadow:0 0 70px #a4c6f328;opacity:.22;pointer-events:none}
+#menu:after{content:"";position:absolute;right:6%;top:9%;width:clamp(48px,7vw,90px);height:clamp(48px,7vw,90px);border-radius:50%;background:#111a30;pointer-events:none}
+.menu-inner{position:relative;z-index:1;padding:2% 5%;justify-content:center}
+.night-label{display:flex;align-items:center;gap:9px;color:#8599bd;font-size:9px;font-weight:700;letter-spacing:.2em;margin-bottom:14px}
+.night-label i{width:5px;height:5px;background:#9ae5d3;border-radius:50%;box-shadow:0 0 12px #9ae5d3}
+.devil-face{width:64px;height:53px;margin-bottom:8px;flex-shrink:0}.devil-face .face{width:52px;height:46px;left:6px}.devil-face .horn{border-left-width:8px;border-right-width:8px;border-bottom-width:18px;top:-5px}.devil-face .horn.left{left:4px}.devil-face .horn.right{right:4px}.devil-face .eye{width:8px;height:10px;top:16px}.devil-face .eye.l{left:13px}.devil-face .eye.r{right:13px}.devil-face .grin{width:26px;height:14px;bottom:9px;border-bottom-width:3px}
+.title{flex-direction:column;gap:2px;letter-spacing:-.055em;line-height:.9;font-size:clamp(35px,5.4vw,70px);margin:6px 0 12px}.t-solo{color:#edf1fb;font-size:.7em;letter-spacing:.08em}.t-devel{color:#c5b6ff}.title-dot{color:#9ae5d3}
+.subtitle{font-size:13px;margin-bottom:18px}.wink{font-weight:500;color:#b3bfd8}
+button#play-btn,button#end-menu-btn{border-radius:5px;box-shadow:0 4px 0 #5b9d94;font-size:12px;padding:14px 30px;min-height:44px;color:#0b2430}
+button#play-btn span{margin-left:25px;font-size:19px;line-height:12px}.grid-label{margin:21px 0 10px;font-size:8px;letter-spacing:.17em}#level-grid{width:min(405px,86%);gap:7px}#level-grid button{border-radius:4px;font-size:12px;min-width:0}.menu-deaths{font-size:11px;margin-top:15px}.controls-hint{font-size:10px;margin-top:5px}#game-tools{gap:7px}.ic-btn{border-radius:5px;color:#b2c1df;background:#15213a99}
+#hud{padding-top:20px}.hud-left{gap:9px}.pill{background:#a9b7e024;color:#c8baff;border:1px solid #b6a5ed44}#hud-levelname{font-size:12px;letter-spacing:.03em}
+@media(max-height:600px){.night-label{margin-bottom:9px;font-size:8px}.devil-face{display:none}.title{font-size:clamp(33px,5.1vw,57px);margin:4px 0 10px}.subtitle{margin-bottom:14px}.grid-label{margin:17px 0 8px}#level-grid{width:min(350px,80%);gap:5px}#level-grid button{font-size:11px}.menu-deaths{margin:12px 0 4px}.controls-hint{font-size:9px}}
+@media(max-width:540px){#menu,#end-screen{overflow:auto}.menu-inner{padding:18px 6%;min-height:100%;height:auto;justify-content:flex-start}.night-label{margin-top:10px;font-size:7px}.title{font-size:clamp(30px,8.9vw,48px)}.subtitle{font-size:10px}#level-grid{grid-template-columns:repeat(6,1fr);width:min(300px,90%);gap:6px}.grid-label{font-size:7px}.controls-hint{font-size:8px;max-width:95%;line-height:1.8}.devil-face{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+#game-tools{top:calc((100dvh - var(--arena-height, 100dvh))/2 + 14px);right:calc((100vw - var(--arena-width, 100vw))/2 + 14px)}
+body[data-playing="true"] #game-tools{top:auto;bottom:calc((100dvh - var(--arena-height, 100dvh))/2 + 14px)}
+@media(pointer:coarse){body[data-playing="true"] #game-tools{top:calc((100dvh - var(--arena-height, 100dvh))/2 + 12px);bottom:auto}body[data-playing="true"] .hud-right{padding-top:45px}}
+@media(max-width:540px) and (orientation:portrait){#menu,#end-screen{width:100vw!important;height:100dvh!important;left:0!important;top:0!important}.menu-inner{justify-content:center;padding:45px 6%}body:not([data-playing="true"]) #game-tools{top:12px;right:12px;z-index:40}}
+
+/* Restore the original Solo Deleveling graphics and title composition. */
+#menu{background:transparent}#menu:before,#menu:after{display:none}#menu .menu-inner{position:absolute;left:7.5%;top:13%;width:56%;height:auto;min-height:0;padding:0;align-items:flex-start;justify-content:flex-start;text-align:left;overflow:visible}#menu .devil-face{display:none}.night-label{font:700 clamp(7px,.85vw,12px) Arial,sans-serif;letter-spacing:.17em;margin:0 0 24px;color:#9ca8c9}.night-label i{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#9ae5d3;border-radius:0;box-shadow:none;color:#112133}.night-label i:before{content:'↘';font-size:21px}.title{font-family:Arial,Helvetica,sans-serif;font-size:clamp(38px,7.1vw,94px);font-weight:900;letter-spacing:-.065em;line-height:.93;margin:0 0 22px;align-items:flex-start;gap:0}.t-solo{font-size:1em;letter-spacing:-.065em}.t-devel{font-size:.87em}.subtitle{font-family:Arial,Helvetica,sans-serif;font-size:clamp(11px,1.25vw,17px);line-height:1.7;margin:0 0 24px;color:#dce2f1}.wink{color:#8b9cbd}button#play-btn{min-height:45px;border-radius:0;box-shadow:none;padding:0 22px;font-size:clamp(9px,.95vw,12px);font-weight:800;letter-spacing:.09em}.grid-label{font-size:clamp(7px,.68vw,9px);margin:24px 0 10px;letter-spacing:.12em;color:#7f93b6}#level-grid{width:clamp(245px,26vw,350px);gap:6px}#level-grid button{font-size:11px;border-radius:0;border-color:#3a4c6d88;color:#b3c0dc}#level-grid button:disabled{opacity:.45}.menu-deaths{margin-top:16px;color:#7e91b4;font-size:10px}.controls-hint{font-size:9px;color:#7c90b0;opacity:.85;margin-top:9px}.hud-room{display:grid;gap:5px}#hud-world{font-size:8px;letter-spacing:.17em;color:#8c9fbe}.hud-left{align-items:center}#hud-levelname{font-family:Arial,Helvetica,sans-serif;font-weight:500;font-size:14px;text-transform:none;letter-spacing:0;color:#dbe4f7}.pill{border-radius:0;font-size:13px;min-width:28px;background:#a99bea12}.ic-btn{border-radius:0;background:#10183155;color:#99a8ca}#hud{padding:22px 28px}.hud-right{font-size:12px;font-weight:400;color:#a9b7d4}.skull{font-size:16px}.hint{font-size:9px}
+#rage-toast{position:absolute;left:50%;top:calc((100dvh - var(--arena-height,100dvh))/2 + var(--arena-height,100dvh)*.28);transform:translate(-50%,8px);width:min(610px,76vw);text-align:center;z-index:16;padding:17px 22px 18px;border:1px solid #b49bdc4a;background:linear-gradient(135deg,#12192cef,#1c1d35ed);box-shadow:0 16px 60px #060b1b55,0 0 28px #bd9cd909;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .14s,transform .18s,visibility .18s}#rage-toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}#rage-meta{display:block;font-size:9px;font-weight:700;letter-spacing:.18em;color:#93a4c1;margin-bottom:10px}#rage-title{display:block;font-family:Arial,Helvetica,sans-serif;font-size:clamp(16px,2.6vw,32px);font-weight:900;letter-spacing:-.035em;line-height:1.1;color:#eab1cc;text-wrap:balance}#rage-detail{display:block;font-size:clamp(10px,1vw,13px);line-height:1.5;color:#a1acc8;margin-top:10px}
+@media(max-height:650px){#menu .menu-inner{top:10%}.night-label{margin-bottom:14px}.title{font-size:clamp(36px,6.3vw,70px);margin-bottom:15px}.subtitle{margin-bottom:17px}.grid-label{margin-top:17px}#level-grid{width:clamp(235px,24vw,300px);gap:4px}.menu-deaths{margin-top:11px}.controls-hint{margin-top:6px}#rage-toast{padding:12px 18px}#rage-meta{margin-bottom:8px}#rage-detail{margin-top:7px}}
+@media(max-width:540px) and (orientation:portrait){#menu{background:linear-gradient(160deg,#0b1024e8,#14203ae8)}#menu .menu-inner{left:7%;top:12%;width:86%;padding:0;min-height:0;align-items:flex-start}.title{font-size:clamp(37px,10.7vw,58px);margin-bottom:24px}.night-label{font-size:8px;margin-bottom:22px}.subtitle{font-size:13px;margin-bottom:24px}#level-grid{grid-template-columns:repeat(6,1fr);width:min(295px,95%);gap:7px}.grid-label{font-size:8px;margin-top:28px}.menu-deaths{font-size:10px;margin-top:18px}.controls-hint{font-size:8px;line-height:1.8}.hud-room{gap:3px}#hud{padding:10px 12px}#hud-world{font-size:6px}#hud-levelname{font-size:9px}.hud-right{font-size:9px}.hint{display:none}#rage-toast{width:88vw;top:calc((100dvh - var(--arena-height,100dvh))/2 + var(--arena-height,100dvh)*.13);padding:12px}#rage-meta{font-size:7px;margin-bottom:7px}#rage-title{font-size:19px}#rage-detail{font-size:10px;margin-top:7px}}
+@media(prefers-reduced-motion:reduce){#rage-toast{transition:none}}
